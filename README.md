@@ -3,7 +3,7 @@ A Python program that calculates steam table properties using pyXSteam.  The pro
 
 ## Requirements
 This repository was written using *Python 3.14.6* and tested in a *Python 3.13.9* environment running on *Windows 11*.
-The major dependency is ['pyXSteam'](https://pyxsteam.readthedocs.io/en/latest/).  This library (available as an install from pip ['here'](https://pypi.org/project/pyXSteam/)) is a port of a Matlab XSteam package that implements the ['IAPWC release IF-97'](http://www.iapws.org/relguide/IF97-Rev.pdf).
+The major dependency is [pyXSteam](https://pyxsteam.readthedocs.io/en/latest/).  This library (available as an install from pip [here](https://pypi.org/project/pyXSteam/)) is a port of a Matlab XSteam package that implements the [IAPWC release IF-97](http://www.iapws.org/relguide/IF97-Rev.pdf).
 ```
 $ pip install pyXSteam
 ```
