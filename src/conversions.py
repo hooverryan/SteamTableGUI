@@ -5,6 +5,16 @@ UC_MKS = UnitConverter(XSteam.UNIT_SYSTEM_MKS)
 UC_FLS = UnitConverter(XSteam.UNIT_SYSTEM_FLS)
 UC_BARE = UnitConverter(XSteam.UNIT_SYSTEM_BARE)
 
+""" Dictionary of unit conversion processes
+
+    Not all unit conversions are specified.  Mostly just to and from the
+    XSteam MKS unit system.  For instance, conversion from kPa to bar
+    exists, but not from kPa to MPa.
+    Units are specified in PROPERTY_UNITS in utils.py.
+    
+    Keys: (from unit, to unit)
+    Values: process to convert between units
+"""
 CONVERSIONS = {
     # Temperature
     ("°C","°F"): lambda x: UC_FLS.fromSIunit_T(UC_MKS.toSIunit_T(x)),
@@ -50,8 +60,17 @@ CONVERSIONS = {
 }
 
 
-
-def convertUnits(val,fromUnit,toUnit):
+def convert_units(val,fromUnit,toUnit) -> float:
+    """ Converts units using the CONVERSIONS dictionary
+    
+        Args:
+            val (float): value to convert
+            fromUnit (str): string (from PROPERTY_UNITS) containing the unit for the input value
+            toUnit (str): string (from PROPERTY_UNITS) containing the unit for the output value
+            
+        Returns:
+            (float) the converted unit value
+    """
     key=(fromUnit,toUnit)
     if key in CONVERSIONS:
         return CONVERSIONS[key](val)

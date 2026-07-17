@@ -1,10 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
-import numpy as np
-from utils import checkErrors,getSteamProperties,PROPERTY_UNITS,PROPERTY
+from utils import get_state_properties,PROPERTY_UNITS,PROPERTY
 
-
-def calculate(prop1Property,prop1Value,prop1Units,prop2Property,prop2Value,prop2Units,outputText):
+def calculate(prop1Property,prop1Value,prop1Units,prop2Property,prop2Value,prop2Units,outputText) -> None:
+    """ Runs when 'Calculate' button is pressed to calculate properties given the two states
+    
+        Args:
+            prop1Property (str): property for Property 1
+            prop1Value (str): value of Property 1 from text box
+            prop1Units (str): units for Property 1
+            prop2Property (str): property for Property 2
+            prop2Value (str): value of Property 2 from text box
+            prop2Units (str): units for Property 2
+            outputText (tkinter Text): Tkinter read only text field
+            
+        Returns: None
+    """
+            
 
     p1Prop = prop1Property.get()
     p1Val = prop1Value.get()
@@ -16,16 +28,25 @@ def calculate(prop1Property,prop1Value,prop1Units,prop2Property,prop2Value,prop2
     outputText.config(state='normal')
     outputText.delete('1.0',tk.END)
 
-    errormsg = checkErrors(p1Prop,p1Val,p2Prop,p2Val)
+    errormsg = validate_inputs(p1Prop,p1Val,p2Prop,p2Val)
     if errormsg:
         outputText.insert('1.0',errormsg)
     else:
-        stateValue = getSteamProperties(p1Prop,p1Val,p1Unit,p2Prop,p2Val,p2Unit)
-        outputText.insert(index='1.0',chars=stateValue)
+        stateProperties = get_state_properties(p1Prop,p1Val,p1Unit,p2Prop,p2Val,p2Unit)
+        outputText.insert(index='1.0',chars=stateProperties)
 
     outputText.config(state='disabled')
 
-def updateUnits(propertyVar, unitCombo):
+def update_units(propertyVar, unitCombo) -> None:
+    """ Function that runs when properties are selected to update the units combo box
+    
+        Args:
+            propteryVar (tkinter StringVar): tkinter property selection
+            unitCombo (tkinter StringVar): tkinter units selection
+            
+        Returns: None
+    
+    """
     selectedProperty = propertyVar.get()
     units = PROPERTY_UNITS.get(selectedProperty, [])
 
@@ -35,7 +56,32 @@ def updateUnits(propertyVar, unitCombo):
     else:
         unitCombo.set("Error")
 
+def validate_inputs(p1Prop,p1Val,p2Prop,p2Val) -> str:
+    """ Validates the inputs
+        Produces an error message if:
+            - The two properties are identical (e.g., Pressure and Pressure)
+            - A value is non numeric (e.g., entering a letter for the value)
+            
+        Args:
+            prop1Prop (str): property for Property 1
+            prop1Val (str): value of Property 1 from text box
+            prop2Prop (str): property for Property 2
+            prop2Val (str): value of Property 2 from text box
 
+        Returns:
+            (str) An error message (or None if there is no error)
+    
+    """
+    errorString = None
+    if p1Prop==p2Prop:
+        errorString = 'Properties must cannot be the same'
+    try:
+        p1Val = float(p1Val)
+        p2Val = float(p2Val)
+    except ValueError:
+        errorString = 'Values must be numeric'
+    
+    return errorString
 
 
 def main():
@@ -73,8 +119,8 @@ def main():
     )
     prop1UnitsCombo.grid(row=0, column=3, padx=5, pady=5)
 
-    updateUnits(prop1Property,prop1UnitsCombo)
-    prop1PropertyCombo.bind('<<ComboboxSelected>>',lambda event: updateUnits(prop1Property,prop1UnitsCombo))
+    update_units(prop1Property,prop1UnitsCombo)
+    prop1PropertyCombo.bind('<<ComboboxSelected>>',lambda event: update_units(prop1Property,prop1UnitsCombo))
 
     # -------------------------------
     # Property 2
@@ -106,8 +152,8 @@ def main():
     )
     prop2UnitsCombo.grid(row=1, column=3, padx=5, pady=5)
 
-    updateUnits(prop2Property,prop2UnitsCombo)
-    prop2PropertyCombo.bind('<<ComboboxSelected>>',lambda event: updateUnits(prop2Property,prop2UnitsCombo))
+    update_units(prop2Property,prop2UnitsCombo)
+    prop2PropertyCombo.bind('<<ComboboxSelected>>',lambda event: update_units(prop2Property,prop2UnitsCombo))
 
 
     # -------------------------------
